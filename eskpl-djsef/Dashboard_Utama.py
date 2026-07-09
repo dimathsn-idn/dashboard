@@ -263,7 +263,7 @@ tren_tabel.columns = ['Unit Eselon II', 'Bulan', 'Jumlah Skor SKM', 'Banyak Data
 
 # Visualisasi Tren Indeks SKM
 tren_skm = px.line(tren_tabel, x='Bulan', y='Indeks SKM', color='Unit Eselon II', markers=True, symbol='Unit Eselon II', height=450, category_orders={'Bulan': bulan_urut})
-tren_skm.add_hline(y=4.36, line_dash="dash", line_color='violet', annotation_text="Garis - - - adalah Target Indeks = 4.36", annotation_position="bottom left")
+tren_skm.add_hline(y=4.37, line_dash="dash", line_color='violet', annotation_text="Garis - - - adalah Target Indeks = 4.37", annotation_position="bottom left")
 tren_skm.update_traces(marker=dict(size=7.5))
 st.plotly_chart(tren_skm)
 
