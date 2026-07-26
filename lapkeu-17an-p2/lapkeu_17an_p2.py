@@ -10,13 +10,18 @@ st.title(":blue[Laporan Keuangan Kegiatan 17an Persatuan 2 KDW]", text_alignment
 conn_uang = st.connection("gsheets_uang", type=GSheetsConnection)
 data_uang = conn_uang.read()
 st.badge(f"Data Masuk Terakhir: {data_uang.loc[data_uang.index[-1], 'TANGGAL']}", icon=":material/database:", color="blue")
-st.badge(f"SALDO: {data_uang.loc[data_uang.index[-1], 'SALDO']}", icon=":material/money:", color="blue")
-data_transaksi = data_uang.melt(value_vars=['PEMASUKAN', 'PENGELUARAN'], var_name='TRANSAKSI', value_name='NILAI TRANSAKSI')
-transaksi_grafik = px.bar(data_transaksi, x='TRANSAKSI', y='NILAI TRANSAKSI', color='TRANSAKSI', text_auto=True)
-transaksi_grafik.update_xaxes(tickfont_size=20, title_font_size=20)
-transaksi_grafik.update_yaxes(tickformat=",", tickfont_size=20, title_font_size=20)
-transaksi_grafik.update_layout(yaxis_title="TOTAL")
-transaksi_grafik.update_traces(width=0.5, textposition='outside', textfont_size=20, textfont_weight=500, textfont_color='blue')
-st.plotly_chart(transaksi_grafik)
+pemasukan = pd.DataFrame(data_uang['PEMASUKAN']).sum()
+pengeluaran = pd.DataFrame(data_uang['PENGELUARAN']).sum()
+total_pemasukan = pemasukan['PEMASUKAN']
+total_pengeluaran = pengeluaran["PENGELUARAN"]
+saldo = (total_pemasukan - total_pengeluaran)
+col_nf_01, col_nf_02 = st.columns(2)
+col_nf_03, col_nf_04 = st.columns(2)
+with col_nf_01:
+    col_nf_01.metric("PEMASUKAN", total_pemasukan, border=True, format="%,d")
+with col_nf_02:
+    col_nf_02.metric("PENGELUARAN", total_pengeluaran, border=True, format="%,d")
+with col_nf_03:
+    col_nf_03.metric("SALDO", saldo, border=True, format="%,d")
 with st.expander("Detil Transaksi"):
     st.dataframe(data_uang)
