@@ -10,6 +10,8 @@ data_anak = conn_anak.read()
 st.set_page_config(page_title="Dashboard", layout="wide")
 st.title(":blue[Data Anak-Anak dan Remaja Persatuan 2 KDW]", text_alignment="center")
 
+data_anak['USIA (TAHUN)'] = data_anak['USIA (TAHUN)'].astype('Int64')
+
 nama_terdata = data_anak['NAMA'].count()
 usia_terdata = data_anak['USIA (TAHUN)'].count()
 st.badge(f"Total Anak/Remaja yang Namanya telah Terdata: {nama_terdata}", icon=":material/emoji_people:", color="blue")
@@ -21,9 +23,17 @@ usia_hitung.rename(columns={'count': 'JUMLAH ANAK'}, inplace=True)
 usia_hitung = usia_hitung.sort_values(by="USIA (TAHUN)", ascending=True)
 
 jalan_saring = data_anak['JALAN PERSATUAN'].sort_values().dropna().unique()
-jalan_widget = st.multiselect(":material/home: Lokasi Tinggal:", jalan_saring)
-if jalan_widget:
-    data_anak = data_anak[data_anak['JALAN PERSATUAN'].isin(jalan_widget)]
+usia_saring = data_anak['USIA (TAHUN)'].sort_values().dropna().unique()
+
+col_s_01, col_s_02 = st.columns(2)
+with col_s_01:
+    jalan_widget = st.multiselect(":material/home: Lokasi Tinggal:", jalan_saring)
+    if jalan_widget:
+        data_anak = data_anak[data_anak['JALAN PERSATUAN'].isin(jalan_widget)]
+with col_s_02:
+    usia_widget = st.multiselect(":material/productivity: Usia:", usia_saring)
+    if usia_widget:
+        data_anak = data_anak[data_anak['USIA (TAHUN)'].isin(usia_widget)]
 st.dataframe(data_anak, hide_index=True)
 
 st.header(":blue[Rekapitulasi per Kategori Usia]")
